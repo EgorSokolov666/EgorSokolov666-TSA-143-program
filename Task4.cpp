@@ -5,28 +5,21 @@
 
 using namespace std;
 
-// Функция для вычисления значения функции y = 3x - 4ln(x) - 5
-double calculateY(double x) {
-    if (x <= 0) {
-        return numeric_limits<double>::quiet_NaN(); // Возвращаем NaN, если x <= 0 (логарифм не определен)
-    }
-    return 3 * x - 4 * log(x) - 5;
-}
+// Прототипы функций (объявление без реализации)
+double getValue(const string& prompt);
+double calculateY(double x);
 
 int main() {
-    double startX, endX, deltaX;
+    double X1, X2, deltaX;
 
-    // Ввод данных от пользователя
-    cout << "Введите начальное значение x (startX): ";
-    cin >> startX;
-    cout << "Введите конечное значение x (endX): ";
-    cin >> endX;
-    cout << "Введите шаг изменения x (deltaX): ";
-    cin >> deltaX;
+    // Ввод данных от пользователя с использованием getValue()
+    X1 = getValue("Введите начальное значение x (X1): ");
+    X2 = getValue("Введите конечное значение x (X2): ");
+    deltaX = getValue("Введите шаг изменения x (deltaX): ");
 
     // Проверка корректности ввода
-    if (startX >= endX || deltaX <= 0) {
-        cout << "Ошибка: Некорректный ввод данных. startX должен быть меньше endX, а deltaX должен быть больше 0." << endl;
+    if (X1 >= X2 || deltaX <= 0) {
+        cout << "Ошибка: Некорректный ввод данных. X1 должен быть меньше X2, а deytaX должен быть больше 0." << endl;
         return 1;
     }
 
@@ -35,8 +28,8 @@ int main() {
     cout << "|   x   |    y    |" << endl;
     cout << "-----------------------" << endl;
 
-    // Табулирование функции
-    for (double x = startX; x <= endX; x += deltaX) {
+    // Табулирование функции (исправлено условие цикла)
+    for (double x = X1; x <= X2 + deltaX; x += deltaX) {
         double y = calculateY(x);
 
         cout << fixed << setprecision(4); // Устанавливаем формат вывода для чисел с плавающей точкой
@@ -54,3 +47,28 @@ int main() {
 
     return 0;
 }
+
+// Функция для безопасного ввода значений с проверкой (реализация)
+double getValue(const string& prompt) {
+    double value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Ошибка ввода. Пожалуйста, введите числовое значение." << endl;
+        } else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+    }
+}
+
+// Функция для вычисления значения функции y = 3x - 4ln(x) - 5 (реализация)
+double calculateY(double x) {
+    if (x <= 0) {
+        return numeric_limits<double>::quiet_NaN(); // Возвращаем NaN, если x <= 0 (логарифм не определен)
+    }
+    return 3 * x - 4 * log(x) - 5;
+}  
