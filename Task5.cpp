@@ -6,30 +6,22 @@
 using namespace std;
 
 // Прототипы функций
-long double sumFirstN(int n);
-long double sumUntilE(double e);
+long double sumFirstN(int n, int k = 1, long double term = -1.0/5.0, long double sum = 0.0);
+long double sumUntilE(double e, int k = 1, long double term = -1.0/5.0, long double sum = 0.0);
+bool getValidInt(int& value, const string& prompt);
+bool getValidDouble(double& value, const string& prompt);
 
 int main() {
-    int n;
-    double e;
+    int n = 0;
+    double e = 0.0;
 
-    // Ввод n
-    cout << "Введите значение n (количество членов для суммирования): ";
-    cin >> n;
-
-    // Проверка ввода n
-    if (n < 1) {
-        cout << "Ошибка: Некорректный ввод для n. Введите целое число больше или равное 1." << endl;
+    // Ввод n с проверкой (рекурсивный)
+    if (!getValidInt(n, "Введите значение n (количество членов для суммирования, целое число >= 1): ")) {
         return 1;
     }
 
-    // Ввод e
-    cout << "Введите значение e (точность для суммирования до e): ";
-    cin >> e;
-
-    // Проверка ввода e
-    if (e <= 0) {
-        cout << "Ошибка: Некорректный ввод для e. Введите положительное число." << endl;
+    // Ввод e с проверкой (рекурсивный)
+    if (!getValidDouble(e, "Введите значение e (точность для суммирования до e, положительное число): ")) {
         return 1;
     }
 
@@ -37,7 +29,7 @@ int main() {
     long double sum_n = sumFirstN(n);
     long double sum_e = sumUntilE(e);
 
-    cout << fixed << setprecision(10); // Устанавливаем точность вывода
+    cout << fixed << setprecision(10);
 
     if (!isnan(sum_n)) {
         cout << "Сумма первых " << n << " членов: " << sum_n << endl;
@@ -50,51 +42,63 @@ int main() {
     return 0;
 }
 
-// Функция для вычисления суммы первых n членов последовательности
-long double sumFirstN(int n) {
-    if (n < 1) {
-        cout << "Ошибка: n должно быть больше или равно 1." << endl;
-        return numeric_limits<double>::quiet_NaN(); // Возвращаем NAN, если n некорректно
+// Рекурсивная функция для ввода целого числа с проверкой
+bool getValidInt(int& value, const string& prompt) {
+    cout << prompt;
+    if (!(cin >> value) || value < 1) {
+        cout << "Ошибка: Некорректный ввод. Пожалуйста, введите целое число больше или равное 1." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return getValidInt(value, prompt); // Рекурсивный вызов
     }
-
-    long double sum = 0.0;
-    long double term = 0.0; // Значение текущего члена последовательности
-    long double fact = 1.0; // Значение факториала
-    for (int k = 1; k <= n; ++k) {
-        fact *= k;  //Вычисляем факториал итеративно
-        term = pow(-1, k) * fact / (4 + k);
-        sum += term;
-    }
-    return sum;
+    return true;
 }
 
-// Функция для вычисления суммы всех членов последовательности,
-// по модулю не меньших заданного числа e (с использованием рекуррентной формулы)
-long double sumUntilE(double e) {
+// Рекурсивная функция для ввода дробного числа с проверкой
+bool getValidDouble(double& value, const string& prompt) {
+    cout << prompt;
+    if (!(cin >> value) || value <= 0) {
+        cout << "Ошибка: Некорректный ввод. Пожалуйста, введите положительное число." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return getValidDouble(value, prompt); // Рекурсивный вызов
+    }
+    return true;
+}
+
+// Рекурсивная функция для вычисления суммы первых n членов последовательности
+long double sumFirstN(int n, int k, long double term, long double sum) {
+    if (n < 1) {
+        cout << "Ошибка: n должно быть больше или равно 1." << endl;
+        return numeric_limits<double>::quiet_NaN();
+    }
+
+    sum += term;
+    
+    if (k >= n) {
+        return sum;
+    }
+    
+    long double next_term = term * (-(k+1)) / (4.0 + (k+1));
+    return sumFirstN(n, k+1, next_term, sum);
+}
+
+// Рекурсивная функция для вычисления суммы членов, больших e по модулю
+long double sumUntilE(double e, int k, long double term, long double sum) {
     if (e <= 0) {
         cout << "Ошибка: e должно быть больше 0." << endl;
-        return numeric_limits<double>::quiet_NaN(); // Возвращаем NAN, если e некорректно
+        return numeric_limits<double>::quiet_NaN();
     }
 
-    long double sum = 0.0;
-    int k = 1;
-    long double term = 1.0; // Инициализируем начальное значение для корректного вычисления по рекуррентной формуле
-    long double fact = 1.0;
-
-    while (true) {
-        fact *= k;
-        term = pow(-1, k) * fact / (4 + k);
-
-        if (abs(term) < e) {
-            break; // Выходим из цикла, если модуль члена меньше e
-        }
-        sum += term;
-        k++;
-
-        if (k > 1000) {
-            cout << "Предупреждение: Сумма не сходится. Ограничение количества итераций достигнуто." << endl;
-            return numeric_limits<double>::quiet_NaN();
-        }
+    if (abs(term) < e) {
+        return sum;
     }
-    return sum;
+    
+    if (k > 1000) {
+        cout << "Предупреждение: Сумма не сходится. Ограничение количества итераций достигнуто." << endl;
+        return numeric_limits<double>::quiet_NaN();
+    }
+    
+    long double next_term = term * (-(k+1)) / (4.0 + (k+1));
+    return sumUntilE(e, k+1, next_term, sum + term);
 }
