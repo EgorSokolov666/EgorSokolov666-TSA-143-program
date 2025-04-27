@@ -5,21 +5,21 @@
 
 using namespace std;
 
-// Прототипы функций (объявление без реализации)
-double getValue(const string& prompt);
+// Прототипы функций
+double getValidDouble(const string& prompt);
 double calculateY(double x);
 
 int main() {
-    double X1, X2, deltaX;
+    double startX, endX, deltaX;
 
-    // Ввод данных от пользователя с использованием getValue()
-    X1 = getValue("Введите начальное значение x (X1): ");
-    X2 = getValue("Введите конечное значение x (X2): ");
-    deltaX = getValue("Введите шаг изменения x (deltaX): ");
+    // Ввод данных от пользователя с проверкой
+    startX = getValidDouble("Введите начальное значение x (startX): ");
+    endX = getValidDouble("Введите конечное значение x (endX): ");
+    deltaX = getValidDouble("Введите шаг изменения x (deltaX): ");
 
     // Проверка корректности ввода
-    if (X1 >= X2 || deltaX <= 0) {
-        cout << "Ошибка: Некорректный ввод данных. X1 должен быть меньше X2, а deytaX должен быть больше 0." << endl;
+    if (startX >= endX || deltaX <= 0) {
+        cout << "Ошибка: Некорректный ввод данных. startX должен быть меньше endX, а deltaX должен быть больше 0." << endl;
         return 1;
     }
 
@@ -28,11 +28,11 @@ int main() {
     cout << "|   x   |    y    |" << endl;
     cout << "-----------------------" << endl;
 
-    // Табулирование функции (исправлено условие цикла)
-    for (double x = X1; x <= X2 + deltaX; x += deltaX) {
+    // Табулирование функции с исправленным условием цикла
+    for (double x = startX; x <= endX + deltaX/2; x += deltaX) {
         double y = calculateY(x);
 
-        cout << fixed << setprecision(4); // Устанавливаем формат вывода для чисел с плавающей точкой
+        cout << fixed << setprecision(4); // Устанавливаем формат вывода
 
         cout << "| " << setw(5) << x << " | ";
 
@@ -48,8 +48,8 @@ int main() {
     return 0;
 }
 
-// Функция для безопасного ввода значений с проверкой (реализация)
-double getValue(const string& prompt) {
+// Функция для безопасного ввода double значений с проверкой
+double getValidDouble(const string& prompt) {
     double value;
     while (true) {
         cout << prompt;
@@ -65,10 +65,10 @@ double getValue(const string& prompt) {
     }
 }
 
-// Функция для вычисления значения функции y = 3x - 4ln(x) - 5 (реализация)
+// Функция для вычисления значения y = 3x - 4ln(x) - 5
 double calculateY(double x) {
     if (x <= 0) {
-        return numeric_limits<double>::quiet_NaN(); // Возвращаем NaN, если x <= 0 (логарифм не определен)
+        return numeric_limits<double>::quiet_NaN(); // Возвращаем NaN, если x <= 0
     }
     return 3 * x - 4 * log(x) - 5;
-}  
+}
