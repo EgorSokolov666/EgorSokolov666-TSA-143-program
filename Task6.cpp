@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include <algorithm>  // Для reverse
+#include <algorithm>
 
 using namespace std;
 
@@ -10,7 +10,6 @@ vector<int> createArray(int n, bool randomFill) {
     vector<int> arr(n);
 
     if (randomFill) {
-        // Заполнение случайными числами от -1000 до 1000
         random_device rd;
         mt19937 gen(rd());
         uniform_int_distribution<> distrib(-1000, 1000);
@@ -19,7 +18,6 @@ vector<int> createArray(int n, bool randomFill) {
             arr[i] = distrib(gen);
         }
     } else {
-        // Заполнение с клавиатуры
         cout << "Введите элементы массива:" << endl;
         for (int i = 0; i < n; ++i) {
             cout << "Элемент [" << i << "]: ";
@@ -38,7 +36,7 @@ void printArray(const vector<int>& arr) {
     cout << endl;
 }
 
-// 1. Найти сумму отрицательных элементов, значения которых кратно 10.
+// 1. Сумма отрицательных элементов, кратных 10
 int sumNegativeMultiplesOfTen(const vector<int>& arr) {
     int sum = 0;
     for (int val : arr) {
@@ -49,7 +47,7 @@ int sumNegativeMultiplesOfTen(const vector<int>& arr) {
     return sum;
 }
 
-// 2. Заменить первые k элементов массива на те же элементы в обратном порядке.
+// 2. Разворот первых k элементов
 void reverseFirstK(vector<int>& arr, int k) {
     if (k > 0 && k <= arr.size()) {
         reverse(arr.begin(), arr.begin() + k);
@@ -58,7 +56,7 @@ void reverseFirstK(vector<int>& arr, int k) {
     }
 }
 
-// 3. Определить, есть ли пара соседних элементов с произведением, равным заданному числу.
+// 3. Проверка на наличие пары с заданным произведением
 bool hasAdjacentPairWithProduct(const vector<int>& arr, int targetProduct) {
     for (int i = 0; i < arr.size() - 1; ++i) {
         if (arr[i] * arr[i + 1] == targetProduct) {
@@ -67,7 +65,6 @@ bool hasAdjacentPairWithProduct(const vector<int>& arr, int targetProduct) {
     }
     return false;
 }
-
 
 int main() {
     int n;
@@ -79,16 +76,16 @@ int main() {
     cin >> fillChoice;
 
     bool randomFill = (fillChoice == 'y' || fillChoice == 'Y');
-
     vector<int> arr = createArray(n, randomFill);
 
     cout << "Исходный массив:" << endl;
     printArray(arr);
 
-    // Выполнение задач
-    int sum = sumNegativeMultiplesOfTen(arr);
-    cout << "Сумма отрицательных элементов, кратных 10: " << sum << endl;
+    // Задача 1
+    cout << "Сумма отрицательных элементов, кратных 10: " 
+         << sumNegativeMultiplesOfTen(arr) << endl;
 
+    // Задача 2
     int k;
     cout << "Введите значение k (количество элементов для разворота): ";
     cin >> k;
@@ -96,14 +93,11 @@ int main() {
     cout << "Массив после разворота первых " << k << " элементов:" << endl;
     printArray(arr);
 
+    // Задача 3
     int targetProduct;
     cout << "Введите целевое произведение для поиска пары соседних элементов: ";
     cin >> targetProduct;
-    if (hasAdjacentPairWithProduct(arr, targetProduct)) {
-        cout << "В массиве есть пара соседних элементов с произведением, равным " << targetProduct << endl;
-    } else {
-        cout << "В массиве нет пары соседних элементов с произведением, равным " << targetProduct << endl;
-    }
+    cout << (hasAdjacentPairWithProduct(arr, targetProduct) ? "Есть такая пара" : "Нет такой пары") << endl;
 
     return 0;
 }
