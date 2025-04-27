@@ -1,5 +1,3 @@
-C++
-
 #include <iostream>
 #include <vector>
 #include <random>
@@ -68,7 +66,7 @@ void insertZeroRows(vector<vector<int>>& matrix) {
     int cols = matrix[0].size();  // Количество столбцов в матрице
 
     for (int i = 0; i < matrix.size(); ++i) {
-        if (matrix[i][0] % 3 == 0) {
+        if (!matrix[i].empty() && matrix[i][0] % 3 == 0) {
             // Вставляем строку из нулей
             newMatrix.push_back(vector<int>(cols, 0));
         }
@@ -77,8 +75,6 @@ void insertZeroRows(vector<vector<int>>& matrix) {
 
     matrix = newMatrix; // Обновляем матрицу
 }
-
-
 
 int main() {
     int rows, cols;
@@ -107,7 +103,6 @@ int main() {
     insertZeroRows(matrix);
     cout << "Матрица после вставки строки нулей перед строками, где первый элемент делится на 3:" << endl;
     printMatrix(matrix);
-
 
     return 0;
 }
