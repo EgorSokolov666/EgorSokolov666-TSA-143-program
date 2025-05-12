@@ -1,62 +1,72 @@
 #include <iostream>
-#include <cmath>
-#include <limits> // Для std::numeric_limits
-#include <string> // Для std::string
-
+#include <cmath> // Для sqrt и pow
 using namespace std;
 
-// Функция для получения числового ввода с проверкой на корректность
-double get_valid_double(const string& prompt) {
-    string input;
+/**
+ * @brief Считывает значение с клавиатуры с проверкой ввода
+ * @return Введённое значение
+ */
+double getValue();
+
+/**
+ * @brief Проверяет, что значение является числом
+ * @return Введённое значение
+ */
+void checkValue(const double value);
+
+/**
+ * @brief Вычисляет расстояние между двумя точками
+ * @param x1 - координата x первой точки
+ * @param y1 - координата y первой точки
+ * @param x2 - координата x второй точки
+ * @param y2 - координата y второй точки
+ * @return Расстояние между точками
+ */
+double calculateDistance(const double x1,const  double y1,const  double x2,const double y2);
+
+/**
+ * @brief Точка входа в программу
+ * @return 0 - если программа выполнена корректно, иначе - 1
+ */
+int main()
+{
+    setlocale(LC_ALL, "rus");
+
+    cout << "Введите координаты первой точки (x1, y1):" << endl;
+    double x1 = getValue();
+    double y1 = getValue();
+
+    cout << "Введите координаты второй точки (x2, y2):" << endl;
+    double x2 = getValue();
+    double y2 = getValue();
+
+    double distance = calculateDistance(x1, y1, x2, y2);
+    cout << "Расстояние между точками: " << distance << endl;
+
+    return 0;
+}
+
+double getValue()
+{
     double value;
+    if (!(cin >> value))
+    {
+        cout << "Некорректное значение" << endl;
+        abort();
+    }
+    return value;
+}
 
-    cout << prompt;
-    getline(cin, input); // Используем getline для чтения всей строки
-
-    // Преобразовываем строку в double
-    try {
-        size_t pos;
-        value = stod(input, &pos);
-
-        // Проверяем, что вся строка была преобразована
-        if (pos == input.length()) {
-            return value; // Успешное преобразование
-        } else {
-            cout << "Некорректный ввод. Пожалуйста, введите число." << endl;
-            // Если ввод не корректный, возвращаем "бесконечность" чтобы сигнализировать об ошибке.
-            return numeric_limits<double>::infinity();
-        }
-    } catch (const invalid_argument& e) {
-        cout << "Некорректный ввод. Пожалуйста, введите число." << endl;
-        // Если ввод не корректный, возвращаем "бесконечность" чтобы сигнализировать об ошибке.
-        return numeric_limits<double>::infinity();
+void checkValue(const double value)
+{
+    if (value <= 0)
+    {
+        cout << "Значение должно быть больше нуля." << endl;
+        abort();
     }
 }
 
-// Функция для вычисления расстояния между двумя точками
-double calculate_distance(double x1, double y1, double x2, double y2) {
+double calculateDistance(const double x1,const double y1,const double x2,const double y2)
+{
     return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
-
-int main() {
-    // Получаем координаты первой точки с проверкой ввода
-    double x1 = get_valid_double("Введите координату x первой точки: ");
-    if (isinf(x1)) return 1; // Выход из программы, если ввод некорректен
-
-    double y1 = get_valid_double("Введите координату y первой точки: ");
-     if (isinf(y1)) return 1; // Выход из программы, если ввод некорректен
-
-    // Получаем координаты второй точки с проверкой ввода
-    double x2 = get_valid_double("Введите координату x второй точки: ");
-     if (isinf(x2)) return 1; // Выход из программы, если ввод некорректен
-
-    double y2 = get_valid_double("Введите координату y второй точки: ");
-     if (isinf(y2)) return 1; // Выход из программы, если ввод некорректен
-
-    // Вычисляем расстояние
-    double distance = calculate_distance(x1, y1, x2, y2);
-
-    // Выводим результат
-    cout << "Расстояние между точками (" << x1 << ", " << y1 << ") и (" << x2 << ", " << y2 << ") равно: " << distance << endl;
-
-    return 0;
