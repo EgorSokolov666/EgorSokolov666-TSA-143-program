@@ -1,103 +1,265 @@
 #include <iostream>
-#include <vector>
-#include <random>
-#include <algorithm>
+#include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
-// Функция для создания массива
-vector<int> createArray(int n, bool randomFill) {
-    vector<int> arr(n);
+/**
+ * @brief оператор выбоа способа заполнения массива
+ * @param RANDOM = 0 автоматическое заполнение
+ * @param MANUALLY =1 ручное заполнение
+ */
+enum SELECT
+{
+    RANDOM = 0,
+    MANUALLY = 1
+};
 
-    if (randomFill) {
-        random_device rd;
-        mt19937 gen(rd());
-        uniform_int_distribution<> distrib(-1000, 1000);
+/**
+ * @brief проверяет размер массива
+ * @param n - размер массива
+ */
+void checkN(const int n);
 
-        for (int i = 0; i < n; ++i) {
-            arr[i] = distrib(gen);
-        }
-    } else {
-        cout << "Введите элементы массива:" << endl;
-        for (int i = 0; i < n; ++i) {
-            cout << "Элемент [" << i << "]: ";
-            cin >> arr[i];
-        }
+/**
+ * @brief считывает размер массива
+ * @return размер массива в беззнаковом типе данных
+ */
+size_t getSize();
+
+/**
+ * @brief считывает значение типа int
+ * @return считанное значение целочисленное
+ */
+int getNumber();
+
+/**
+ * @brief вывод массива на экран
+ * @param arr - массив
+ * @param n - размер массива
+ */
+void printArray(const int* arr, const int n);
+
+/**
+ * @brief заполнение массива автоматически случайнвми числами в заданном диапазоне
+ * @param arr - массив
+ * @param n - размер массива
+ * @param min - минимальное значение диапазона значений элементов массива
+ * @param max - максимальное значение диапазона значений элементов массива
+ */
+void fillArrayRandom(int* arr, const int n, const int min, const int max);
+
+/**
+ * @brief проверяет диапазон
+ * @param min - минимальное значение диапазона значений элементов массива
+ * @param max - максимальное значение диапазона значений элементов массива
+ */
+void checkRange(const int min, const int max);
+
+/**
+ * @brief проходит по каждому элементу массива arr.
+ * @param arr Указатель на массив целых чисел.
+ * @param n Количество элементов в массиве.
+ * @return sum
+ */
+int sumOfNegativesDivisibleByTen(const int arr[], const int n);
+
+/**
+ * @brief Функция изменяет порядок первых k элементов в массиве arr.
+ * @param arr Указатель на массив целых чисел.
+ * @param k Целое число, представляющее количество элементов, которые нужно обратить
+ */
+void reverseFirstKElements(int arr[], const int k);
+
+/**
+ * @brief Проверяет, есть ли в массиве пара соседних элементов с произведением, равным заданному числу.
+ * @param arr Указатель на массив целых чисел.
+ * @param n Количество элементов в массиве.
+ * @param product Заданное число для сравнения произведения.
+ * @return true, если такая пара найдена, иначе false.
+ */
+bool hasAdjacentProduct(const int* arr, const int n, const int product);
+
+/**
+ * @brief заполнение массива вручную
+ * @param arr - массив
+ * @param n - размер массива
+ * @param min - минимальное значение диапазона значений элементов массива
+ * @param max - максимальное значение диапазона значений элементов массива
+ */
+void fillArray(int* arr, const int n, const int min, const int max);
+
+/**
+* @brief точка входа в программу
+* @return 0 - если программма выполнена корректно, инече -1
+*/
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    int n = getSize();
+    int* arr = new int[n];
+
+    cout << "Введите минимальное и максимальное значение диапазона: ";
+    int minValue = getNumber();
+    int maxValue = getNumber();
+    checkRange(minValue, maxValue);
+
+    cout << "Введите выбор для заполнения массива: " << endl
+        << RANDOM << " Для случайного заполнения" << endl
+        << MANUALLY << " Для ручного заполнения" << endl;
+
+    int choice = getNumber();
+
+    switch (choice)
+    {
+    case RANDOM:
+        fillArrayRandom(arr, n, minValue, maxValue);
+        break;
+    case MANUALLY:
+        fillArray(arr, n, minValue, maxValue);
+        break;
+    default:
+        cout << "Ваш выбор неверен" << endl;
+        delete[] arr;
+        return -1;
     }
 
-    return arr;
+    cout << "Элементы массива:" << endl;
+    printArray(arr, n);
+
+    cout << "Сумма отрицательных элементов, значения которых кратны 10: " << sumOfNegativesDivisibleByTen(arr, n) << endl;
+
+    cout << "Введите количество элементов для реверса: ";
+    int k = getNumber();
+    reverseFirstKElements(arr, k);
+    cout << "Массив после реверса первых " << k << " элементов: ";
+    printArray(arr, n);
+
+
+    cout << "Введите число для проверки произведения соседних элементов: ";
+    int product = getNumber();
+
+    if (hasAdjacentProduct(arr, n, product)) {
+        cout << "Есть пара соседних элементов с произведением, равным " << product << endl;
+    }
+    else {
+        cout << "Нет пары соседних элементов с произведением, равным " << product << endl;
+    }
+    cout << "Измененный массив: ";
+    printArray(arr, n);
+
+    delete[] arr;
+    return 0;
 }
 
-// Функция для вывода массива
-void printArray(const vector<int>& arr) {
-    for (int val : arr) {
-        cout << val << " ";
+void checkN(const int n)
+{
+    if (n <= 0)
+    {
+        cout << "Неправильный размер массива" << endl;
+        abort();
+    }
+}
+
+size_t getSize()
+{
+    cout << "Введите размер массива: ";
+    int n;
+    cin >> n;
+    checkN(n);
+    return static_cast<size_t>(n);
+}
+
+int getNumber()
+{
+    int number;
+    cin >> number;
+    if (cin.fail())
+    {
+        cout << "Неправильный ввод данных" << endl;
+        cin.clear(); // Очистка флага ошибки
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Игнорирование оставшегося ввода
+        return getNumber(); // Рекурсивный вызов для повторного ввода
+    }
+    return number;
+}
+
+void printArray(const int* arr, const int n)
+{
+    for (size_t i = 0; i < n; i++)
+    {
+        cout << arr[i] << " ";
     }
     cout << endl;
 }
 
-// 1. Сумма отрицательных элементов, кратных 10
-int sumNegativeMultiplesOfTen(const vector<int>& arr) {
+void fillArrayRandom(int* arr, const int n, const int min, const int max)
+{
+    srand(static_cast<unsigned int>(time(0)));
+    for (size_t i = 0; i < n; i++)
+    {
+        arr[i] = rand() % (max - min + 1) + min;
+    }
+}
+
+void checkRange(const int min, const int max)
+{
+    if (min >= max)
+    {
+        cout << "Введен неправильный диапазон" << endl;
+        abort();
+    }
+}
+
+int sumOfNegativesDivisibleByTen(const int arr[], const int n)
+{
     int sum = 0;
-    for (int val : arr) {
-        if (val < 0 && val % 10 == 0) {
-            sum += val;
+    for (size_t i = 0; i < n; ++i)
+    {
+        if (arr[i] < 0 && arr[i] % 10 == 0)
+        {
+            sum += arr[i];
         }
     }
     return sum;
 }
 
-// 2. Разворот первых k элементов
-void reverseFirstK(vector<int>& arr, int k) {
-    if (k > 0 && k <= arr.size()) {
-        reverse(arr.begin(), arr.begin() + k);
-    } else {
-        cout << "Некорректное значение k. Операция не выполнена." << endl;
+void reverseFirstKElements(int arr[], const int k)
+{
+    int start = 0;
+    int end = k - 1;
+    while (start < end)
+    {
+        int temp = arr[start];
+        arr[start] = arr[end];
+        arr[end] = temp;
+        start++;
+        end--;
     }
 }
 
-// 3. Проверка на наличие пары с заданным произведением
-bool hasAdjacentPairWithProduct(const vector<int>& arr, int targetProduct) {
-    for (int i = 0; i < arr.size() - 1; ++i) {
-        if (arr[i] * arr[i + 1] == targetProduct) {
+bool hasAdjacentProduct(const int* arr, const int n, const int product)
+{
+    for (size_t i = 0; i < n - 1; ++i)
+    {
+        if (arr[i] * arr[i + 1] == product)
+        {
             return true;
         }
     }
     return false;
 }
 
-int main() {
-    int n;
-    cout << "Введите размер массива: ";
-    cin >> n;
-
-    char fillChoice;
-    cout << "Заполнить случайными числами? (y/n): ";
-    cin >> fillChoice;
-
-    bool randomFill = (fillChoice == 'y' || fillChoice == 'Y');
-    vector<int> arr = createArray(n, randomFill);
-
-    cout << "Исходный массив:" << endl;
-    printArray(arr);
-
-    // Задача 1
-    cout << "Сумма отрицательных элементов, кратных 10: " 
-         << sumNegativeMultiplesOfTen(arr) << endl;
-
-    // Задача 2
-    int k;
-    cout << "Введите значение k (количество элементов для разворота): ";
-    cin >> k;
-    reverseFirstK(arr, k);
-    cout << "Массив после разворота первых " << k << " элементов:" << endl;
-    printArray(arr);
-
-    // Задача 3
-    int targetProduct;
-    cout << "Введите целевое произведение для поиска пары соседних элементов: ";
-    cin >> targetProduct;
-    cout << (hasAdjacentPairWithProduct(arr, targetProduct) ? "Есть такая пара" : "Нет такой пары") << endl;
-
-    return 0;
+void fillArray(int* arr, const int n, const int min, const int max)
+{
+    for (size_t i = 0; i < n; i++)
+    {
+        cout << "Введите значение для arr[" << i << "]: ";
+        arr[i] = getNumber();
+        if (arr[i] < min || arr[i] > max)
+        {
+            cout << "Значение вне диапазона" << endl;
+            i--;
+        }
+    }
 }
