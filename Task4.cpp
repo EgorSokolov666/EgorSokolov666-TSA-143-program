@@ -1,74 +1,95 @@
 #include <iostream>
 #include <cmath>
-#include <iomanip>
-#include <limits> // для numeric_limits
-
+#include <limits>
 using namespace std;
 
-// Прототипы функций
-double getValidDouble(const string& prompt);
-double calculateY(double x);
+/**
+ * @brief Считывает значения с клавиатуры с проверкой ввода
+ * @return возвращает значение, если оно правильное, иначе завершает программу
+ */
+double getValue();
 
-int main() {
-    double startX, endX, deltaX;
+/**
+ * @brief Функция для вычисления значения функции y = 3x - 4 * ln(x) - 5
+ * @param x - аргумент функции
+ * @return значение функции
+ */
+double calculateFunction(const double x);
 
-    // Ввод данных от пользователя с проверкой
-    startX = getValidDouble("Введите начальное значение x (startX): ");
-    endX = getValidDouble("Введите конечное значение x (endX): ");
-    deltaX = getValidDouble("Введите шаг изменения x (deltaX): ");
+/**
+ * @brief Функция для проверки, что шаг положительный
+ * @return шаг
+ */
+double getPositiveStep();
 
-    // Проверка корректности ввода
-    if (startX >= endX || deltaX <= 0) {
-        cout << "Ошибка: Некорректный ввод данных. startX должен быть меньше endX, а deltaX должен быть больше 0." << endl;
+/**
+ * @brief Точка входа в программу
+ * @return 0
+ */
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+
+    cout << "Введите начальное значение x: ";
+    double startX = getValue();
+
+    cout << "Введите конечное значение x: ";
+    double endX = getValue();
+
+    if (startX > endX)
+    {
+        cout << "Ошибка: начальное значение x должно быть меньше, чем конечное" << endl;
         return 1;
     }
 
-    // Вывод заголовка таблицы
-    cout << "-----------------------" << endl;
-    cout << "|   x   |    y    |" << endl;
-    cout << "-----------------------" << endl;
+    double step = getPositiveStep();
 
-    // Табулирование функции с исправленным условием цикла
-    for (double x = startX; x <= endX + deltaX/2; x += deltaX) {
-        double y = calculateY(x);
+    cout << "x | y" << endl;
+    cout << "--------" << endl;
 
-        cout << fixed << setprecision(4); // Устанавливаем формат вывода
-
-        cout << "| " << setw(5) << x << " | ";
-
-        if (isnan(y)) {
-            cout << "  N/A   |" << endl; // Выводим "N/A", если значение y не определено
-        } else {
-            cout << setw(7) << y << " |" << endl;
+    for (double x = startX; x <= endX; x += step)
+    {
+        // Проверка на допустимость значения x для логарифма
+        if (x <= 0)
+        {
+            cout << "Ошибка: логарифм не определен для x = " << x << endl;
+            continue;
         }
-    }
 
-    cout << "-----------------------" << endl;
+        double y = calculateFunction(x);
+        cout << x << " | " << y << endl;
+    }
 
     return 0;
 }
 
-// Функция для безопасного ввода double значений с проверкой
-double getValidDouble(const string& prompt) {
+double getValue()
+{
     double value;
-    while (true) {
-        cout << prompt;
-        cin >> value;
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Пожалуйста, введите числовое значение." << endl;
-        } else {
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            return value;
-        }
+    cin >> value;
+    if (cin.fail())
+    {
+        cout << "Некорректное значение" << endl;
+        abort();
     }
+    return value;
 }
 
-// Функция для вычисления значения y = 3x - 4ln(x) - 5
-double calculateY(double x) {
-    if (x <= 0) {
-        return numeric_limits<double>::quiet_NaN(); // Возвращаем NaN, если x <= 0
-    }
-    return 3 * x - 4 * log(x) - 5;
+double calculateFunction(const double x)
+{
+    return 3 * x - 4 * log(x) - 5; 
+}
+
+double getPositiveStep()
+{
+    double step;
+    do {
+        cout << "Введите шаг: ";
+        step = getValue();
+        if (step <= 0)
+        {
+            cout << "Ошибка. Шаг должен быть положительным. Повторите ввод." << endl;
+        }
+    } while (step <= 0);
+    return step;
 }
