@@ -28,7 +28,7 @@ double recur(const int k);
  * @brief Функция для проверки ввода n
  * @return Возвращает n, если введено правильно, в противном случае -1
  */
-int getValidN();
+double getValidN();
 
 /**
  * @brief Функция для проверки ввода e
@@ -44,18 +44,10 @@ int main()
 {
     setlocale(LC_ALL, "Russian");
     int n = getValidN();
-    if (n == -1)
-    {
-        return 1; // Возвращаем код ошибки
-    }
 
     cout << "Сумма первых " << n << " членов последовательности: " << sumFirstN(n) << endl;
 
     double e = getValidE();
-    if (e == -1)
-    {
-        return 1; // Возвращаем код ошибки
-    }
 
     cout << "Сумма всех членов последовательности, модуль которых не меньше " << e << ": " << sumModuloE(e) << endl;
 
@@ -71,7 +63,7 @@ int getValidN()
     if (cin.fail() || n <= 0)
     {
         cout << "Ошибка: n должно быть положительным числом." << endl;
-        return -1; // Возвращаем -1 для обработки ошибки
+        abort(); // Abort
     }
 
     return n;
@@ -86,7 +78,7 @@ double getValidE()
     if (e < numeric_limits<double>::epsilon() && e < recur(1))
     {
         cout << "Ошибка: e должно быть положительным числом." << endl;
-        return -1; // Возвращаем -1 для обработки ошибки
+        abort(); // Abort
     }
 
     return e;
