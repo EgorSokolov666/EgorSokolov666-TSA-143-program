@@ -25,13 +25,13 @@ void checkN(const int n);
  * @brief считывает размер массива
  * @return размер массива в беззнаковом типе данных
  */
-size_t getSize();
+double getSize();
 
 /**
  * @brief считывает значение типа int
  * @return считанное значение целочисленное
  */
-int getNumber();
+double getNumber();
 
 /**
  * @brief вывод массива на экран
