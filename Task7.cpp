@@ -1,108 +1,106 @@
 #include <iostream>
-#include <vector>
-#include <random>
-#include <limits> // Для numeric_limits
+#include <cmath>
 
 using namespace std;
 
-// Функция для создания матрицы
-vector<vector<int>> createMatrix(int rows, int cols, bool randomFill) {
-    vector<vector<int>> matrix(rows, vector<int>(cols));
+// Определение константы PI
+const double PI = 3.14159265358979323846;
 
-    if (randomFill) {
-        // Заполнение случайными числами от -10 до 10
-        random_device rd;
-        mt19937 gen(rd());
-        uniform_int_distribution<> distrib(-10, 10);
+/**
+ * @brief Считывает значение с клавиатуры с проверкой ввода
+ * @return Введённое значение
+ */
+double getValue();
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                matrix[i][j] = distrib(gen);
-            }
-        }
-    } else {
-        // Заполнение с клавиатуры
-        cout << "Введите элементы матрицы:" << endl;
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                cout << "Элемент [" << i << "][" << j << "]: ";
-                cin >> matrix[i][j];
-            }
-        }
-    }
+/**
+ * @brief Проверяет, расположены ли три точки на одной прямой
+ * @param x1, y1 - координаты точки A
+ * @param x2, y2 - координаты точки B
+ * @param x3, y3 - координаты точки C
+ * @return true, если точки на одной прямой, иначе false
+ */
+bool areCollinear(double x1, double y1, double x2, double y2, double x3, double y3);
 
-    return matrix;
-}
+/**
+ * @brief Вычисляет угол B в градусах между AB и BC
+ * @param x1, y1 - координаты точки A
+ * @param x2, y2 - координаты точки B
+ * @param x3, y3 - координаты точки C
+ * @return Угол B в градусах
+ */
+double calculateAngleB(double x1, double y1, double x2, double y2, double x3, double y3);
 
-// Функция для вывода матрицы
-void printMatrix(const vector<vector<int>>& matrix) {
-    for (const auto& row : matrix) {
-        for (int val : row) {
-            cout << val << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-// 1. Заменить максимальный элемент каждой строки нулем.
-void replaceMaxWithZero(vector<vector<int>>& matrix) {
-    for (int i = 0; i < matrix.size(); ++i) {
-        int maxVal = numeric_limits<int>::min();  // Инициализируем минимальным возможным значением int
-        int maxIndex = 0;
-        for (int j = 0; j < matrix[i].size(); ++j) {
-            if (matrix[i][j] > maxVal) {
-                maxVal = matrix[i][j];
-                maxIndex = j;
-            }
-        }
-        matrix[i][maxIndex] = 0;
-    }
-}
-
-// 2. Вставить перед всеми строками, первый элемент которых делится на 3, строку из нулей.
-void insertZeroRows(vector<vector<int>>& matrix) {
-    vector<vector<int>> newMatrix;
-    int cols = matrix[0].size();  // Количество столбцов в матрице
-
-    for (int i = 0; i < matrix.size(); ++i) {
-        if (!matrix[i].empty() && matrix[i][0] % 3 == 0) {
-            // Вставляем строку из нулей
-            newMatrix.push_back(vector<int>(cols, 0));
-        }
-        newMatrix.push_back(matrix[i]);
-    }
-
-    matrix = newMatrix; // Обновляем матрицу
-}
+/**
+ * @brief Проверяет значение на корректность (больше нуля)
+ * @param value - проверяемое значение
+ */
+void checkValue(double value);
 
 int main() {
-    int rows, cols;
+    setlocale(LC_ALL, "rus");
 
-    cout << "Введите количество строк: ";
-    cin >> rows;
+    cout << "Введите координаты точки A (x1, y1): " << endl;
+    double x1 = getValue();
+    double y1 = getValue();
 
-    cout << "Введите количество столбцов: ";
-    cin >> cols;
+    cout << "Введите координаты точки B (x2, y2): " << endl;
+    double x2 = getValue();
+    double y2 = getValue();
 
-    char fillChoice;
-    cout << "Заполнить случайными числами? (y/n): ";
-    cin >> fillChoice;
+    cout << "Введите координаты точки C (x3, y3): " << endl;
+    double x3 = getValue();
+    double y3 = getValue();
 
-    bool randomFill = (fillChoice == 'y' || fillChoice == 'Y');
-
-    vector<vector<int>> matrix = createMatrix(rows, cols, randomFill);
-
-    cout << "Исходная матрица:" << endl;
-    printMatrix(matrix);
-
-    replaceMaxWithZero(matrix);
-    cout << "Матрица после замены максимальных элементов каждой строки на нуль:" << endl;
-    printMatrix(matrix);
-
-    insertZeroRows(matrix);
-    cout << "Матрица после вставки строки нулей перед строками, где первый элемент делится на 3:" << endl;
-    printMatrix(matrix);
+    if (areCollinear(x1, y1, x2, y2, x3, y3)) {
+        cout << "Точки A, B и C расположены на одной прямой." << endl;
+    }
+    else {
+        double angleB = calculateAngleB(x1, y1, x2, y2, x3, y3);
+        cout << "Точки A, B и C не расположены на одной прямой." << endl;
+        cout << "Угол B: " << angleB << " градусов." << endl;
+    }
 
     return 0;
+}
+
+double getValue() {
+    double value;
+    cin >> value;
+    checkValue(value);
+    return value;
+}
+
+bool areCollinear(double x1, double y1, double x2, double y2, double x3, double y3) {
+    // Проверка на коллинеарность с использованием площади треугольника
+    return (y2 - y1) * (x3 - x2) == (y3 - y2) * (x2 - x1);
+}
+
+double calculateAngleB(double x1, double y1, double x2, double y2, double x3, double y3) {
+    // Вектор AB
+    double ABx = x2 - x1;
+    double ABy = y2 - y1;
+
+    // Вектор BC
+    double BCx = x3 - x2;
+    double BCy = y3 - y2;
+
+    // Вычисление угла между векторами AB и BC
+    double dotProduct = ABx * BCx + ABy * BCy;
+    double magnitudeAB = sqrt(ABx * ABx + ABy * ABy);
+    double magnitudeBC = sqrt(BCx * BCx + BCy * BCy);
+
+    // Угол в радианах
+    double angleRadian = acos(dotProduct / (magnitudeAB * magnitudeBC));
+
+    // Перевод угла в градусы
+    return angleRadian * (180.0 / PI);
+}
+
+void checkValue(double value) {
+    if (cin.fail() || value <= 0) {
+        cout << "Ошибка: введено некорректное значение." << endl;
+        cin.clear(); // Сбрасываем состояние потока
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Очищаем буфер
+        abort();
+    }
 }
