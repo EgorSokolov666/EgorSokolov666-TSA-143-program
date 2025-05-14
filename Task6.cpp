@@ -130,8 +130,11 @@ int main()
     cout << "Сумма отрицательных элементов, значения которых кратны 10: " << sumOfNegativesDivisibleByTen(arr, n) << endl;
 
     cout << "Введите количество элементов для реверса: ";
-    int k = getNumber();
-    reverseFirstKElements(arr, k);
+    int k = getNumber(); 
+    int arr_copy[SIZE]; // SIZE - размер массива
+    std::copy(arr, arr + SIZE, arr_copy); // Копируем элементы
+    reverseFirstKElements(arr_copy, k);
+    
     cout << "Массив после реверса первых " << k << " элементов: ";
     printArray(arr, n);
 
