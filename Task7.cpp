@@ -3,9 +3,6 @@
 
 using namespace std;
 
-// Определение константы PI
-const double PI = 3.14159265358979323846;
-
 /**
  * @brief Считывает значение с клавиатуры с проверкой ввода
  * @return Введённое значение
@@ -36,28 +33,48 @@ double calculateAngleB(double x1, double y1, double x2, double y2, double x3, do
  */
 void checkValue(double value);
 
+/**
+ * @brief Главная функция программы, определяющая коллинеарность трех точек и, если необходимо, вычисляющая угол между ними.
+ *
+ * Функция main выполняет следующие действия:
+ * 1. Устанавливает локаль для корректного отображения русских символов.
+ * 2. Запрашивает у пользователя координаты трех точек A, B и C, используя функцию getValue.
+ * 3. Проверяет, расположены ли точки на одной прямой, вызывая функцию areCollinear.
+ * 4. Если точки коллинеарны, выводит соответствующее сообщение.
+ * 5. Если точки не коллинеарны:
+ *    - Вызывает функцию calculateAngleB для вычисления угла B между векторами BA и BC.
+ *    - Если calculateAngleB возвращает NAN (Not a Number), то это означает, что точки B, A и/или С совпадают и угол не определен. В этом случае выводится сообщение об ошибке.
+ *    - В противном случае выводится значение угла B в градусах.
+ *
+ * @return 0 Код возврата, сигнализирующий об успешном завершении программы.
+ */
 int main() {
-    setlocale(LC_ALL, "rus");
+    std::setlocale(LC_ALL, "ru_RU.UTF-8");
+    std::wcout.imbue(std::locale("ru_RU.UTF-8"));
 
-    cout << "Введите координаты точки A (x1, y1): " << endl;
+    std::cout << "Введите координаты точки A (x1, y1): " << std::endl;
     double x1 = getValue();
     double y1 = getValue();
 
-    cout << "Введите координаты точки B (x2, y2): " << endl;
+    std::cout << "Введите координаты точки B (x2, y2): " << std::endl;
     double x2 = getValue();
     double y2 = getValue();
 
-    cout << "Введите координаты точки C (x3, y3): " << endl;
+    std::cout << "Введите координаты точки C (x3, y3): " << std::endl;
     double x3 = getValue();
     double y3 = getValue();
 
     if (areCollinear(x1, y1, x2, y2, x3, y3)) {
-        cout << "Точки A, B и C расположены на одной прямой." << endl;
-    }
-    else {
+        std::cout << "Точки A, B и C расположены на одной прямой." << std::endl;
+    } else {
         double angleB = calculateAngleB(x1, y1, x2, y2, x3, y3);
-        cout << "Точки A, B и C не расположены на одной прямой." << endl;
-        cout << "Угол B: " << angleB << " градусов." << endl;
+        if (std::isnan(angleB)) {
+            // Обработка случая, когда угол не определен (совпадение точек)
+            std::cout << "Невозможно вычислить угол, точки совпадают." << std::endl;
+        } else {
+            std::cout << "Точки A, B и C не расположены на одной прямой." << std::endl;
+            std::cout << "Угол B: " << angleB << " градусов." << std::endl;
+        }
     }
 
     return 0;
@@ -70,9 +87,10 @@ double getValue() {
     return value;
 }
 
-bool areCollinear(double x1, double y1, double x2, double y2, double x3, double y3) {
-    // Проверка на коллинеарность с использованием площади треугольника
-    return (y2 - y1) * (x3 - x2) == (y3 - y2) * (x2 - x1);
+ bool areCollinear(double x1, double y1, double x2, double y2, double x3, double y3) {
+      const double epsilon = 1e-6; // Задайте небольшое значение для погрешности
+      return std::fabs((y2 - y1) * (x3 - x2) - (y3 - y2) * (x2 - x1)) < epsilon;
+    };
 }
 
 double calculateAngleB(double x1, double y1, double x2, double y2, double x3, double y3) {
