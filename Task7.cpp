@@ -31,7 +31,7 @@ double calculateAngleB(double x1, double y1, double x2, double y2, double x3, do
  * @brief Проверяет значение на корректность (больше нуля)
  * @param value - проверяемое значение
  */
-void checkValue(double value);
+double value();
 
 /**
  * @brief Главная функция программы, определяющая коллинеарность трех точек и, если необходимо, вычисляющая угол между ними.
