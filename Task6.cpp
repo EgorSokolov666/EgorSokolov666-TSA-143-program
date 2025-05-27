@@ -1,7 +1,7 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
-
+#include <vector>
 using namespace std;
 
 /**
@@ -131,7 +131,7 @@ int main()
 
     cout << "Введите количество элементов для реверса: ";
     int k = getNumber(); 
-    int arr_copy[SIZE]; // SIZE - размер массива
+    std::vector<int> arr_copy(k); // динамический массив размера k
     std::copy(arr, arr + SIZE, arr_copy); // Копируем элементы
     reverseFirstKElements(arr_copy, k);
     
