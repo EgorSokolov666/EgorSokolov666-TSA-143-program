@@ -8,9 +8,10 @@ using namespace std;
  * @param n Число членов последовательности
  * @return Возвращает значение суммы
  */
-double sumFirstN(const int n);
-
-double e = 0.0; // Инициализируем e значением по умолчанию (например, 0.0)
+double sumFirstN(const int n) {
+    double e = 0.0;  // Локальная переменная, инициализированная значением по умолчанию
+    // ... остальной код функции, использующий e ...
+    return e;
 /**
  * @brief Вычисляет сумму членов последовательности, по модулю не меньших заданного числа e
  * @param e Число, которое должно быть меньше модуля члена последовательности
@@ -91,7 +92,7 @@ double sumFirstN(const int n)
     double current = a0;
     double sum = current;
 
-    for (int k = 0; k <= n - 1; ++k)
+    for (int k = 0; k <= n; ++k)
     {
         current *= recur(k);
         sum += current;
