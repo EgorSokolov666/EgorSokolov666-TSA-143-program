@@ -81,7 +81,7 @@ int main() {
 }
 
 double getValue() {
-    double value;
+    double value=0;
     cin >> value;
     checkValue(value);
     return value;
