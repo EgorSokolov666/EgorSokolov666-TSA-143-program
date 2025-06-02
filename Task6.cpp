@@ -136,7 +136,7 @@ int main()
     reverseFirstKElements(arr_copy, k);
     
     cout << "Массив после реверса первых " << k << " элементов: ";
-    printArray(arr, n);
+    printArray(arr_copy, n);
 
 
     cout << "Введите число для проверки произведения соседних элементов: ";
