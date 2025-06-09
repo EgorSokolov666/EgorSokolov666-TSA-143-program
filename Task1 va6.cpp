@@ -35,18 +35,11 @@ int main() {
 }
 
 double geta(const double x, const double y, const double z) {
-    if (x + y == 0) {
-        std::cerr << "Error: Division by zero in geta(). x + y = 0" << std::endl;
-        return numeric_limits<double>::quiet_NaN(); // Возвращаем "Not a Number"
-    }
+    if (x + y == 0) 
     return pow(x, 3) * pow(tan(x), 2) * pow((x + y), 2) + z / sqrt(x + y);
 }
 
 double getb(const double x, const double y, const double z) {
     double denominator = exp(z * x) - 1;
-    if (denominator == 0) {
-        std::cerr << "Error: Division by zero in getb(). exp(z*x) - 1 = 0" << std::endl;
-        return numeric_limits<double>::quiet_NaN(); // Возвращаем "Not a Number"
-    }
     return (y * pow(x, 2) - z) / denominator;
 }
