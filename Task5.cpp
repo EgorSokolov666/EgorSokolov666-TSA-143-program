@@ -1,125 +1,75 @@
 #include <iostream>
-#include <cmath>
-
+#include <vector>
+#include <cstdlib> // для rand()
+#include <ctime>   // для time()
 using namespace std;
 
-/**
- * @brief Считывает значение с клавиатуры с проверкой ввода
- * @return Введённое значение
- */
-double getValue();
+// Функция для вывода массива
+void printMatrix(const vector<vector<int>>& matrix) {
+    for (const auto& row : matrix) {
+        for (int val : row) {
+            cout << val << "\t";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
 
-/**
- * @brief Проверяет, расположены ли три точки на одной прямой
- * @param x1, y1 - координаты точки A
- * @param x2, y2 - координаты точки B
- * @param x3, y3 - координаты точки C
- * @return true, если точки на одной прямой, иначе false
- */
-bool areCollinear(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3);
+// Функция замены максимального элемента каждой строки на 0
+void replaceMaxInRows(vector<vector<int>>& matrix) {
+    for (auto& row : matrix) {
+        if (row.empty()) continue;
+        int maxIndex = 0;
+        for (size_t i = 1; i < row.size(); ++i) {
+            if (row[i] > row[maxIndex]) maxIndex = i;
+        }
+        row[maxIndex] = 0;
+    }
+}
 
-/**
- * @brief Вычисляет угол B в градусах между AB и BC
- * @param x1, y1 - координаты точки A
- * @param x2, y2 - координаты точки B
- * @param x3, y3 - координаты точки C
- * @return Угол B в градусах
- */
-double calculateAngleB(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3);
+// Функция вставки строк из нулей перед строками, первый элемент которых делится на 3
+void insertZeroRows(vector<vector<int>>& matrix) {
+    size_t cols = matrix.empty() ? 0 : matrix[0].size();
+    for (size_t i = 0; i < matrix.size(); ++i) {
+        if (matrix[i][0] % 3 == 0) {
+            vector<int> zeroRow(cols, 0);
+            matrix.insert(matrix.begin() + i, zeroRow);
+            ++i; // пропускаем вставленную строку
+        }
+    }
+}
 
-/**
- * @brief Проверяет значение на корректность (больше нуля)
- * @param value - проверяемое значение
- */
-double value();
-
-/**
- * @brief Главная функция программы, определяющая коллинеарность трех точек и, если необходимо, вычисляющая угол между ними.
- *
- * Функция main выполняет следующие действия:
- * 1. Устанавливает локаль для корректного отображения русских символов.
- * 2. Запрашивает у пользователя координаты трех точек A, B и C, используя функцию getValue.
- * 3. Проверяет, расположены ли точки на одной прямой, вызывая функцию areCollinear.
- * 4. Если точки коллинеарны, выводит соответствующее сообщение.
- * 5. Если точки не коллинеарны:
- *    - Вызывает функцию calculateAngleB для вычисления угла B между векторами BA и BC.
- *    - Если calculateAngleB возвращает NAN (Not a Number), то это означает, что точки B, A и/или С совпадают и угол не определен. В этом случае выводится сообщение об ошибке.
- *    - В противном случае выводится значение угла B в градусах.
- *
- * @return 0 Код возврата, сигнализирующий об успешном завершении программы.
- */
 int main() {
-    std::setlocale(LC_ALL, "ru_RU.UTF-8");
-    std::wcout.imbue(std::locale("ru_RU.UTF-8"));
+    setlocale(LC_ALL, "rus");
+    srand(static_cast<unsigned int>(time(nullptr)));
 
-    std::cout << "Введите координаты точки A (x1, y1): " << std::endl;
-    const double x1 = getValue();
-    const double y1 = getValue();
+    int n = 0 , m = 0;
+    cout << "Введите количество строк n: ";
+    cin >> n;
+    cout << "Введите количество столбцов m: ";
+    cin >> m;
 
-    std::cout << "Введите координаты точки B (x2, y2): " << std::endl;
-    const double x2 = getValue();
-    const double y2 = getValue();
+    vector<vector<int>> matrix(n, vector<int>(m));
 
-    std::cout << "Введите координаты точки C (x3, y3): " << std::endl;
-    const double x3 = getValue();
-    const double y3 = getValue();
-
-    if (areCollinear(x1, y1, x2, y2, x3, y3)) {
-        std::cout << "Точки A, B и C расположены на одной прямой." << std::endl;
-    } else {
-        double angleB = calculateAngleB(x1, y1, x2, y2, x3, y3);
-        if (std::isnan(angleB)) {
-            // Обработка случая, когда угол не определен (совпадение точек)
-            std::cout << "Невозможно вычислить угол, точки совпадают." << std::endl;
-        } else {
-            std::cout << "Точки A, B и C не расположены на одной прямой." << std::endl;
-            std::cout << "Угол B: " << angleB << " градусов." << std::endl;
+    // Заполнение массива случайными числами от 1 до 20
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            matrix[i][j] = rand() % 20 + 1;
         }
     }
 
+    cout << "Исходный массив:\n";
+    printMatrix(matrix);
+
+    replaceMaxInRows(matrix);
+
+    cout << "После замены максимального элемента каждой строки на 0:\n";
+    printMatrix(matrix);
+
+    insertZeroRows(matrix);
+
+    cout << "После вставки строк из нулей перед строками, первый элемент которых делится на 3:\n";
+    printMatrix(matrix);
+
     return 0;
-}
-
-double getValue() {
-    double value=0;
-    cin >> value;
-    checkValue(value);
-    return value;
-}
-
- bool areCollinear(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3) {
-     std::numeric_limits::epsilon();// Задайте небольшое значение для погрешности
-      
-     return std::fabs((y2 - y1) * (x3 - x2) - (y3 - y2) * (x2 - x1)) < epsilon;
-    };
-}
-
-double calculateAngleB(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3) {
-    // Вектор AB
-    double ABx = x2 - x1;
-    double ABy = y2 - y1;
-
-    // Вектор BC
-    double BCx = x3 - x2;
-    double BCy = y3 - y2;
-
-    // Вычисление угла между векторами AB и BC
-    double dotProduct = ABx * BCx + ABy * BCy;
-    double magnitudeAB = sqrt(ABx * ABx + ABy * ABy);
-    double magnitudeBC = sqrt(BCx * BCx + BCy * BCy);
-
-    // Угол в радианах
-    double angleRadian = acos(dotProduct / (magnitudeAB * magnitudeBC));
-
-    // Перевод угла в градусы
-    return angleRadian * (180.0 / M_PI);
-}
-
-void checkValue(double value) {
-    if (cin.fail() || value <= 0) {
-        cout << "Ошибка: введено некорректное значение." << endl;
-        cin.clear(); // Сбрасываем состояние потока
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Очищаем буфер
-        abort();
-    }
 }
