@@ -1,125 +1,120 @@
 #include <iostream>
 #include <cmath>
-
+#include <limits>
 using namespace std;
 
 /**
- * @brief Считывает значение с клавиатуры с проверкой ввода
- * @return Введённое значение
+ * @brief Расчитывает сумму N членов
+ * @param n Число членов последовательности
+ * @return Возвращает значение суммы
  */
-double getValue();
+double sumFirstN(const int n) {
 
 /**
- * @brief Проверяет, расположены ли три точки на одной прямой
- * @param x1, y1 - координаты точки A
- * @param x2, y2 - координаты точки B
- * @param x3, y3 - координаты точки C
- * @return true, если точки на одной прямой, иначе false
+ * @brief Вычисляет сумму членов последовательности, по модулю не меньших заданного числа e
+ * @param e Число, которое должно быть меньше модуля члена последовательности
+ * @return Возвращает значение суммы
  */
-bool areCollinear(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3);
+double sumModuloE(const double e);
 
 /**
- * @brief Вычисляет угол B в градусах между AB и BC
- * @param x1, y1 - координаты точки A
- * @param x2, y2 - координаты точки B
- * @param x3, y3 - координаты точки C
- * @return Угол B в градусах
+ * @brief Вычисляет рекурентное выражение
+ * @param k Переменная k
+ * @return -1/ (k + 1) / (k + 2)
  */
-double calculateAngleB(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3);
+double recur(const int k);
 
 /**
- * @brief Проверяет значение на корректность (больше нуля)
- * @param value - проверяемое значение
+ * @brief Функция для проверки ввода n
+ * @return Возвращает n, если введено правильно, в противном случае -1
  */
-double value();
+double getValidN();
 
 /**
- * @brief Главная функция программы, определяющая коллинеарность трех точек и, если необходимо, вычисляющая угол между ними.
- *
- * Функция main выполняет следующие действия:
- * 1. Устанавливает локаль для корректного отображения русских символов.
- * 2. Запрашивает у пользователя координаты трех точек A, B и C, используя функцию getValue.
- * 3. Проверяет, расположены ли точки на одной прямой, вызывая функцию areCollinear.
- * 4. Если точки коллинеарны, выводит соответствующее сообщение.
- * 5. Если точки не коллинеарны:
- *    - Вызывает функцию calculateAngleB для вычисления угла B между векторами BA и BC.
- *    - Если calculateAngleB возвращает NAN (Not a Number), то это означает, что точки B, A и/или С совпадают и угол не определен. В этом случае выводится сообщение об ошибке.
- *    - В противном случае выводится значение угла B в градусах.
- *
- * @return 0 Код возврата, сигнализирующий об успешном завершении программы.
+ * @brief Функция для проверки ввода e
+ * @return Возвращает e, если введено правильно, в противном случае -1
  */
-int main() {
-    std::setlocale(LC_ALL, "ru_RU.UTF-8");
-    std::wcout.imbue(std::locale("ru_RU.UTF-8"));
+double getValidE();
 
-    std::cout << "Введите координаты точки A (x1, y1): " << std::endl;
-    const double x1 = getValue();
-    const double y1 = getValue();
+/**
+*@brief Точка входа для программы
+*@return 0
+*/
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    int n = getValidN();
 
-    std::cout << "Введите координаты точки B (x2, y2): " << std::endl;
-    const double x2 = getValue();
-    const double y2 = getValue();
+    cout << "Сумма первых " << n << " членов последовательности: " << sumFirstN(n) << endl;
 
-    std::cout << "Введите координаты точки C (x3, y3): " << std::endl;
-    const double x3 = getValue();
-    const double y3 = getValue();
+    double e = getValidE();
 
-    if (areCollinear(x1, y1, x2, y2, x3, y3)) {
-        std::cout << "Точки A, B и C расположены на одной прямой." << std::endl;
-    } else {
-        double angleB = calculateAngleB(x1, y1, x2, y2, x3, y3);
-        if (std::isnan(angleB)) {
-            // Обработка случая, когда угол не определен (совпадение точек)
-            std::cout << "Невозможно вычислить угол, точки совпадают." << std::endl;
-        } else {
-            std::cout << "Точки A, B и C не расположены на одной прямой." << std::endl;
-            std::cout << "Угол B: " << angleB << " градусов." << std::endl;
-        }
-    }
+    cout << "Сумма всех членов последовательности, модуль которых не меньше " << e << ": " << sumModuloE(e) << endl;
 
     return 0;
 }
 
-double getValue() {
-    double value=0;
-    cin >> value;
-    checkValue(value);
-    return value;
-}
+int getValidN()
+{
+    int n;
+    cout << "Введите значение n: ";
+    cin >> n;
 
- bool areCollinear(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3) {
-     std::numeric_limits::epsilon();// Задайте небольшое значение для погрешности
-      
-     return std::fabs((y2 - y1) * (x3 - x2) - (y3 - y2) * (x2 - x1)) < epsilon;
-    };
-}
-
-double calculateAngleB(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3) {
-    // Вектор AB
-    double ABx = x2 - x1;
-    double ABy = y2 - y1;
-
-    // Вектор BC
-    double BCx = x3 - x2;
-    double BCy = y3 - y2;
-
-    // Вычисление угла между векторами AB и BC
-    double dotProduct = ABx * BCx + ABy * BCy;
-    double magnitudeAB = sqrt(ABx * ABx + ABy * ABy);
-    double magnitudeBC = sqrt(BCx * BCx + BCy * BCy);
-
-    // Угол в радианах
-    double angleRadian = acos(dotProduct / (magnitudeAB * magnitudeBC));
-
-    // Перевод угла в градусы
-    return angleRadian * (180.0 / M_PI);
-}
-
-void checkValue(double value) {
-    if (cin.fail() || value <= 0) {
-        cout << "Ошибка: введено некорректное значение." << endl;
-        cin.clear(); // Сбрасываем состояние потока
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Очищаем буфер
-        abort();
+    if (cin.fail() || n <= 0)
+    {
+        cout << "Ошибка: n должно быть положительным числом." << endl;
+        abort(); // Abort
     }
+
+    return n;
+}
+
+double getValidE()
+{
+    double e;
+    cout << "Введите значение e: ";
+    cin >> e;
+
+    if (e < numeric_limits<double>::epsilon() && e < recur(1))
+    {
+        cout << "Ошибка: e должно быть положительным числом." << endl;
+        abort(); // Abort
+    }
+
+    return e;
+}
+
+double sumFirstN(const int n)
+{
+    const double a0 = 1;
+    double current = a0;
+    double sum = current;
+
+    for (int k = 0; k < n; ++k)
+    {
+        current *= recur(k);
+        sum += current;
+    }
+
+    return sum;
+}
+
+double sumModuloE(const double e)
+{
+    double sum = 0;
+    double current = -1;
+    int k = 0;
+
+    while (abs(current) >= e)
+    {
+        sum += current;
+        current *= recur(k++);
+    }
+
+    return sum;
+}
+
+double recur(const int k)
+{
+    return -1/ (k + 1) / (k + 2);
 }
