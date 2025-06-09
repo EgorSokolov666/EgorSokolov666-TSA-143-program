@@ -16,7 +16,7 @@ double getValue();
  * @param x3, y3 - координаты точки C
  * @return true, если точки на одной прямой, иначе false
  */
-bool areCollinear(constdouble x1, constdouble y1, constdouble x2, constdouble y2, constdouble x3, constdouble y3);
+bool areCollinear(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3);
 
 /**
  * @brief Вычисляет угол B в градусах между AB и BC
@@ -25,7 +25,7 @@ bool areCollinear(constdouble x1, constdouble y1, constdouble x2, constdouble y2
  * @param x3, y3 - координаты точки C
  * @return Угол B в градусах
  */
-double calculateAngleB(constdouble x1, constdouble y1, constdouble x2, constdouble y2, constdouble x3, constdouble y3);
+double calculateAngleB(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3);
 
 /**
  * @brief Проверяет значение на корректность (больше нуля)
@@ -53,16 +53,16 @@ int main() {
     std::wcout.imbue(std::locale("ru_RU.UTF-8"));
 
     std::cout << "Введите координаты точки A (x1, y1): " << std::endl;
-    constdouble x1 = getValue();
-    constdouble y1 = getValue();
+    const double x1 = getValue();
+    const double y1 = getValue();
 
     std::cout << "Введите координаты точки B (x2, y2): " << std::endl;
-    constdouble x2 = getValue();
-    constdouble y2 = getValue();
+    const double x2 = getValue();
+    const double y2 = getValue();
 
     std::cout << "Введите координаты точки C (x3, y3): " << std::endl;
-    constdouble x3 = getValue();
-    constdouble y3 = getValue();
+    const double x3 = getValue();
+    const double y3 = getValue();
 
     if (areCollinear(x1, y1, x2, y2, x3, y3)) {
         std::cout << "Точки A, B и C расположены на одной прямой." << std::endl;
@@ -87,14 +87,14 @@ double getValue() {
     return value;
 }
 
- bool areCollinear(constdouble x1, constdouble y1, constdouble x2, constdouble y2, constdouble x3, constdouble y3) {
+ bool areCollinear(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3) {
      std::numeric_limits::epsilon();// Задайте небольшое значение для погрешности
       
      return std::fabs((y2 - y1) * (x3 - x2) - (y3 - y2) * (x2 - x1)) < epsilon;
     };
 }
 
-double calculateAngleB(constdouble x1, constdouble y1, constdouble x2, constdouble y2, constdouble x3, constdouble y3) {
+double calculateAngleB(const double x1, const double y1, const double x2, const double y2, const double x3, const double y3) {
     // Вектор AB
     double ABx = x2 - x1;
     double ABy = y2 - y1;
