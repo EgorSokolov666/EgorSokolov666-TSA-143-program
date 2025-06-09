@@ -48,7 +48,7 @@ int main()
 
 double getValue()
 {
-    double value;
+    double value = 0;
     if (!(cin >> value))
     {
         cout << "Некорректное значение" << endl;
