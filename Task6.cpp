@@ -131,9 +131,10 @@ int main()
 
     cout << "Введите количество элементов для реверса: ";
     int k = getNumber(); 
-    std::vector<int> arr_copy(k); // динамический массив размера k
+    int * arr_copy = new int[k]; // динамический массив размера k
     std::copy(arr, arr + SIZE, arr_copy); // Копируем элементы
     reverseFirstKElements(arr_copy, k);
+
     
     cout << "Массив после реверса первых " << k << " элементов: ";
     printArray(arr_copy, n);
@@ -151,7 +152,7 @@ int main()
     cout << "Измененный массив: ";
     printArray(arr, n);
 
-    delete[] arr;
+    delete[] arr_copy;
     return 0;
 }
 
