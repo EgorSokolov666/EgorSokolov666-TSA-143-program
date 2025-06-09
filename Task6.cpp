@@ -62,14 +62,14 @@ void checkRange(const int min, const int max);
  * @param n Количество элементов в массиве.
  * @return sum
  */
-int sumOfNegativesDivisibleByTen(const int arr[], const int n);
+int sumOfNegativesDivisibleByTen(const int* arr, const int n);
 
 /**
  * @brief Функция изменяет порядок первых k элементов в массиве arr.
  * @param arr Указатель на массив целых чисел.
  * @param k Целое число, представляющее количество элементов, которые нужно обратить
  */
-void reverseFirstKElements(int arr[], const int k);
+void reverseFirstKElements(int* arr, const int k);
 
 /**
  * @brief Проверяет, есть ли в массиве пара соседних элементов с произведением, равным заданному числу.
@@ -214,7 +214,7 @@ void checkRange(const int min, const int max)
     }
 }
 
-int sumOfNegativesDivisibleByTen(const int arr[], const int n)
+int sumOfNegativesDivisibleByTen(const int* arr, const int n)
 {
     int sum = 0;
     for (size_t i = 0; i < n; ++i)
@@ -227,7 +227,7 @@ int sumOfNegativesDivisibleByTen(const int arr[], const int n)
     return sum;
 }
 
-void reverseFirstKElements(int arr[], const int k)
+void reverseFirstKElements(int* arr, const int k)
 {
     int start = 0;
     int end = k - 1;
