@@ -25,7 +25,7 @@ void checkN(const int n);
  * @brief считывает размер массива
  * @return размер массива в беззнаковом типе данных
  */
-double getSize();
+size_t getSize();
 
 /**
  * @brief считывает значение типа int
@@ -96,7 +96,7 @@ void fillArray(int* arr, const int n, const int min, const int max);
 int main()
 {
     setlocale(LC_ALL, "Russian");
-    int n = getSize();
+    size_t n = getSize();
     int* arr = new int[n];
 
     cout << "Введите минимальное и максимальное значение диапазона: ";
@@ -149,8 +149,6 @@ int main()
     else {
         cout << "Нет пары соседних элементов с произведением, равным " << product << endl;
     }
-    cout << "Измененный массив: ";
-    printArray(arr, n);
 
     delete[] arr_copy;
     return 0;
@@ -202,7 +200,7 @@ void fillArrayRandom(int* arr, const int n, const int min, const int max)
     srand(static_cast<unsigned int>(time(0)));
     for (size_t i = 0; i < n; i++)
     {
-        arr[i] = rand() % (max - min + 1) + min;
+        arr[i] = rand() * (max - min + 1) + min;
     }
 }
 
