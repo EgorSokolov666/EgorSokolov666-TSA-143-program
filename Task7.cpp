@@ -116,5 +116,5 @@ double sumModuloE(const double e)
 
 double recur(const int k)
 {
-    return (-1)^k * k/(4+k);
+    return (-1)^k * k!/(4+k)!;
 }
