@@ -244,7 +244,7 @@ bool hasAdjacentProduct(const int* arr, const int n, const int product)
 {
     for (size_t i = 0; i < n - 1; ++i)
     {
-        if (arr[i] * arr[i + 1] == product)
+        if abs((arr[i] * arr[i + 1]) - product) <= double epsilon
         {
             return true;
         }
