@@ -20,7 +20,7 @@ double sumModuloE(const double e);
 /**
  * @brief Вычисляет рекурентное выражение
  * @param k Переменная k
- * @return (-1)^k * k/(4+k)
+ * @return (-1)^k * k!/(4+k)!
  */
 double recur(const int k);
 
