@@ -200,7 +200,7 @@ void fillArrayRandom(int* arr, const int n, const int min, const int max)
     srand(static_cast<unsigned int>(time(0)));
     for (size_t i = 0; i < n; i++)
     {
-        arr[i] = rand() * (max - min + 1) + min;
+        arr[i] = rand() & (max - min + 1) + min;
     }
 }
 
