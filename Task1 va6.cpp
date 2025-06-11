@@ -34,8 +34,7 @@ int main() {
     return 0;
 }
 
-double geta(const double x, const double y, const double z) {
-    if (x + y == 0) 
+double geta(const double x, const double y, const double z) { 
     return pow(x, 3) * pow(tan(x), 2) * pow((x + y), 2) + z / sqrt(x + y);
 }
 
