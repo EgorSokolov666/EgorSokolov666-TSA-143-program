@@ -56,7 +56,7 @@ int main()
 
 int getValidN()
 {
-    int n;
+    int n = 0;
     cout << "Введите значение n: ";
     cin >> n;
 
@@ -71,7 +71,7 @@ int getValidN()
 
 double getValidE()
 {
-    double e;
+    double e = 0.0;
     cout << "Введите значение e: ";
     cin >> e;
 
@@ -112,9 +112,14 @@ double sumModuloE(const double e)
     }
 
     return sum;
-}
 
+}
 double recur(const int k)
 {
-    return (-1)^k * k!/(4+k)!;
+    if (k < 0) return 0; // Undefined for negative k
+    if (k == 0) return 1.0 / 24.0; // 0!/(4+0)! = 1/24
+    
+    // Recursive case: (-1)^k * k!/(4+k)! = (-1) * (-1)^(k-1) * [k/(4+k)] * (k-1)!/(4+k-1)!
+    return -1.0 * recur(k - 1) * k / (4 + k);
 }
+double recur(const int k)
