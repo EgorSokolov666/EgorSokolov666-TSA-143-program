@@ -132,7 +132,7 @@ int main()
     cout << "Введите количество элементов для реверса: ";
     int k = getNumber(); 
     int * arr_copy = new int[k]; // динамический массив размера k
-    std::copy(arr, arr + SIZE, arr_copy); // Копируем элементы
+    new copy(arr, arr + SIZE, arr_copy); // Копируем элементы
     reverseFirstKElements(arr_copy, k);
 
     
@@ -150,6 +150,7 @@ int main()
         cout << "Нет пары соседних элементов с произведением, равным " << product << endl;
     }
 
+    delete[] copy;
     delete[] arr_copy;
     return 0;
 }
@@ -166,7 +167,7 @@ void checkN(const int n)
 size_t getSize()
 {
     cout << "Введите размер массива: ";
-    int n;
+    int n=0;
     cin >> n;
     checkN(n);
     return static_cast<size_t>(n);
@@ -178,10 +179,7 @@ int getNumber()
     cin >> number;
     if (cin.fail())
     {
-        cout << "Неправильный ввод данных" << endl;
-        cin.clear(); // Очистка флага ошибки
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Игнорирование оставшегося ввода
-        return getNumber(); // Рекурсивный вызов для повторного ввода
+        abort();
     }
     return number;
 }
@@ -206,7 +204,7 @@ void fillArrayRandom(int* arr, const int n, const int min, const int max)
 
 void checkRange(const int min, const int max)
 {
-    if (min >= max)
+    if (min > max)
     {
         cout << "Введен неправильный диапазон" << endl;
         abort();
@@ -258,10 +256,9 @@ void fillArray(int* arr, const int n, const int min, const int max)
     {
         cout << "Введите значение для arr[" << i << "]: ";
         arr[i] = getNumber();
-        if (arr[i] < min || arr[i] > max)
+        if(arr[i] < min || arr[i] > max)
         {
-            cout << "Значение вне диапазона" << endl;
-            i--;
-        }
+            cout << " значение вне диапозона " << endl;
     }
+}
 }
