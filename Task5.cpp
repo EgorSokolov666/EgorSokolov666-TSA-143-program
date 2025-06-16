@@ -1,14 +1,13 @@
 #include <iostream>
-#include <vector>
-#include <cstdlib> // для rand()
+#include <cstdlib> // для rand() и malloc/free
 #include <ctime>   // для time()
 using namespace std;
 
 // Функция для вывода массива
-void printMatrix(const vector<vector<int>>& matrix) {
-    for (const auto& row : matrix) {
-        for (int val : row) {
-            cout << val << "\t";
+void printMatrix(int** matrix, int n, int m) {
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            cout << matrix[i][j] << "\t";
         }
         cout << endl;
     }
@@ -16,40 +15,101 @@ void printMatrix(const vector<vector<int>>& matrix) {
 }
 
 // Функция замены максимального элемента каждой строки на 0
-void replaceMaxInRows(vector<vector<int>>& matrix) {
-    for (auto& row : matrix) {
-        if (row.empty()) continue;
+void replaceMaxInRows(int** matrix, int n, int m) {
+    for (int i = 0; i < n; ++i) {
+        if (m == 0) continue;
         int maxIndex = 0;
-        for (size_t i = 1; i < row.size(); ++i) {
-            if (row[i] > row[maxIndex]) maxIndex = i;
+        for (int j = 1; j < m; ++j) {
+            if (matrix[i][j] > matrix[i][maxIndex]) maxIndex = j;
         }
-        row[maxIndex] = 0;
+        matrix[i][maxIndex] = 0;
     }
 }
 
 // Функция вставки строк из нулей перед строками, первый элемент которых делится на 3
-void insertZeroRows(vector<vector<int>>& matrix) {
-    size_t cols = matrix.empty() ? 0 : matrix[0].size();
-    for (size_t i = 0; i < matrix.size(); ++i) {
+int** insertZeroRows(int** matrix, int& n, int m) {
+    int zeroRows = 0;
+    for (int i = 0; i < n; ++i) {
         if (matrix[i][0] % 3 == 0) {
-            vector<int> zeroRow(cols, 0);
-            matrix.insert(matrix.begin() + i, zeroRow);
-            ++i; // пропускаем вставленную строку
+            ++zeroRows;
         }
     }
+
+    int newN = n + zeroRows;
+    int** newMatrix = (int**)malloc(newN * sizeof(int*));
+    if (!newMatrix) {
+        cerr << "Ошибка выделения памяти для новой матрицы!" << endl;
+        exit(1);
+    }
+
+    for (int i = 0; i < newN; ++i) {
+        newMatrix[i] = (int*)malloc(m * sizeof(int));
+        if (!newMatrix[i]) {
+            cerr << "Ошибка выделения памяти для строки матрицы!" << endl;
+            // Освободить ранее выделенную память
+            for (int j = 0; j < i; ++j) {
+                free(newMatrix[j]);
+            }
+            free(newMatrix);
+            exit(1);
+        }
+    }
+
+    int newRowIndex = 0;
+    for (int i = 0; i < n; ++i) {
+        if (matrix[i][0] % 3 == 0) {
+            // Вставить нулевую строку
+            for (int j = 0; j < m; ++j) {
+                newMatrix[newRowIndex][j] = 0;
+            }
+            ++newRowIndex;
+        }
+        // Скопировать исходную строку
+        for (int j = 0; j < m; ++j) {
+            newMatrix[newRowIndex][j] = matrix[i][j];
+        }
+        ++newRowIndex;
+    }
+
+    // Освободить память, занимаемую исходной матрицей
+    for (int i = 0; i < n; ++i) {
+        free(matrix[i]);
+    }
+    free(matrix);
+
+    n = newN;
+    return newMatrix;
 }
 
 int main() {
     setlocale(LC_ALL, "rus");
     srand(static_cast<unsigned int>(time(nullptr)));
 
-    int n = 0 , m = 0;
+    int n = 0, m = 0;
     cout << "Введите количество строк n: ";
     cin >> n;
     cout << "Введите количество столбцов m: ";
     cin >> m;
 
-    vector<vector<int>> matrix(n, vector<int>(m));
+    // Выделение памяти для матрицы
+    int** matrix = (int**)malloc(n * sizeof(int*));
+    if (!matrix) {
+        cerr << "Ошибка выделения памяти для матрицы!" << endl;
+        return 1;
+    }
+
+    for (int i = 0; i < n; ++i) {
+        matrix[i] = (int*)malloc(m * sizeof(int));
+        if (!matrix[i]) {
+            cerr << "Ошибка выделения памяти для строки матрицы!" << endl;
+            // Освободить ранее выделенную память
+            for (int j = 0; j < i; ++j) {
+                free(matrix[j]);
+            }
+            free(matrix);
+            return 1;
+        }
+    }
 
     // Заполнение массива случайными числами от 1 до 20
     for (int i = 0; i < n; ++i) {
@@ -59,17 +119,23 @@ int main() {
     }
 
     cout << "Исходный массив:\n";
-    printMatrix(matrix);
+    printMatrix(matrix, n, m);
 
-    replaceMaxInRows(matrix);
+    replaceMaxInRows(matrix, n, m);
 
     cout << "После замены максимального элемента каждой строки на 0:\n";
-    printMatrix(matrix);
+    printMatrix(matrix, n, m);
 
-    insertZeroRows(matrix);
+    matrix = insertZeroRows(matrix, n, m);
 
     cout << "После вставки строк из нулей перед строками, первый элемент которых делится на 3:\n";
-    printMatrix(matrix);
+    printMatrix(matrix, n, m);
+
+    // Освобождение памяти
+    for (int i = 0; i < n; ++i) {
+        free(matrix[i]);
+    }
+    free(matrix);
 
     return 0;
 }
