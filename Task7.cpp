@@ -116,10 +116,7 @@ double sumModuloE(const double e)
 }
 double recur(const int k)
 {
-    if (k < 0) return 0; // Undefined for negative k
-    if (k == 0) return 1.0 / 24.0; // 0!/(4+0)! = 1/24
-    
-    // Recursive case: (-1)^k * k!/(4+k)! = (-1) * (-1)^(k-1) * [k/(4+k)] * (k-1)!/(4+k-1)!
+   // Recursive case: (-1)^k * k!/(4+k)! = (-1) * (-1)^(k-1) * [k/(4+k)] * (k-1)!/(4+k-1)!
     return -1.0 * recur(k - 1) * k / (4 + k);
 }
 double recur(const int k)
