@@ -149,8 +149,7 @@ int main()
     else {
         cout << "Нет пары соседних элементов с произведением, равным " << product << endl;
     }
-
-    delete[] copy;
+    delete[] k;
     delete[] arr_copy;
     return 0;
 }
