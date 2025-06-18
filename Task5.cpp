@@ -39,7 +39,7 @@ int getNumber();
  * @brief Выводит двумерный массив на экран
  * @param arr Константная ссылка на выводимый массив
  */
-void printArray(const vector<vector<int>>& arr);
+void printArray(int** arr, const int rows, const int cols);
 
 /**
  * @brief Заполняет массив случайными числами в заданном диапазоне
@@ -47,7 +47,7 @@ void printArray(const vector<vector<int>>& arr);
  * @param min Нижняя граница диапазона
  * @param max Верхняя граница диапазона
  */
-void fillArrayRandom(vector<vector<int>>& arr, const int min, const int max);
+void fillArrayRandom(int** arr, const int rows, const int cols, const int min, const int max);
 
 /**
  * @brief Проверяет корректность диапазона значений
@@ -63,24 +63,25 @@ void checkRange(const int min, const int max);
  * @param min Нижняя граница допустимых значений
  * @param max Верхняя граница допустимых значений
  */
-void fillArray(vector<vector<int>>& arr, const int min, const int max);
+void fillArray(int** arr, const int rows, const int cols, const int min, const int max);
 
 /**
  * @brief Заменяет максимальный элемент каждой строки на ноль
  * @param arr Ссылка на преобразуемый массив
  */
-void replaceMaxWithZero(vector<vector<int>>& arr);
+void replaceMaxWithZero(int** arr, const int rows, const int cols);
 
 /**
  * @brief Вставляет строку из нулей перед строками, где первый элемент делится на 3
  * @param arr Ссылка на преобразуемый массив
  */
-void insertZeroRows(vector<vector<int>>& arr);
+void insertZeroRows(int*** arr, const int rows, const int cols);
 
 /**
  * @brief Точка входа в программу
  * @return EXIT_SUCCESS при успешном выполнении, EXIT_FAILURE при ошибке
  */
+void freeArray(int** arr, const int rows);
 
 int main()
 {
@@ -89,7 +90,10 @@ int main()
     int rows = getSize();
     int cols = getSize();
     
-    vector<vector<int>> arr(rows, vector<int>(cols));
+    int** arr = new int*[rows];
+    for (int i = 0; i < rows; i++) {
+        arr[i] = new int[cols];
+    }
 
     cout << "Введите минимальное и максимальное значение диапазона: ";
     int minValue = getNumber();
@@ -105,27 +109,29 @@ int main()
     switch ((SELECT)choice)
     {
     case RANDOM:
-        fillArrayRandom(arr, minValue, maxValue);
+        fillArrayRandom(arr, rows, cols, minValue, maxValue);
         break;
     case MANUALLY:
-        fillArray(arr, minValue, maxValue);
+        fillArray(arr, rows, cols, minValue, maxValue);
         break;
     default:
         cout << "Ваш выбор неверен" << endl;
+        freeArray(arr, rows);
         return -1;
     }
 
     cout << "\nИсходный массив:\n";
-    printArray(arr);
+    printArray(arr, rows, cols);
 
-    replaceMaxWithZero(arr);
+    replaceMaxWithZero(arr, rows, cols);
     cout << "\nМассив после замены максимальных элементов строк на нули:\n";
-    printArray(arr);
+    printArray(arr, rows, cols);
 
-    insertZeroRows(arr);
+    insertZeroRows(arr, rows, cols);
     cout << "\nМассив после вставки строк из нулей перед строками с первым элементом, делящимся на 3:\n";
-    printArray(arr);
-
+    printArray(arr, rows, cols);
+    
+    freeArray(arr, rows);
     return EXIT_SUCCESS;
 }
 
@@ -157,7 +163,7 @@ int getNumber()
     return number;
 }
 
-void printArray(const vector<vector<int>>& arr)
+void printArray(int** arr, const int rows, const int cols)
 {
     for (size_t i = 0; i < arr.size(); i++)
     {
@@ -169,12 +175,12 @@ void printArray(const vector<vector<int>>& arr)
     }
 }
 
-void fillArrayRandom(vector<vector<int>>& arr, const int min, const int max)
+void fillArrayRandom(int** arr, const int rows, const int cols const int min, const int max)
 {
     srand(static_cast<unsigned int>(time(0)));
-    for (size_t i = 0; i < arr.size(); i++)
+    for (size_t i = 0; i < rows; i++)
     {
-        for (size_t j = 0; j < arr[i].size(); j++)
+        for (size_t j = 0; j < cols; j++)
         {
             arr[i][j] = rand() % (max - min + 1) + min;
         }
@@ -190,11 +196,11 @@ void checkRange(const int min, const int max)
     }
 }
 
-void fillArray(vector<vector<int>>& arr, const int min, const int max)
+void fillArray(int** arr, const int rows, const int cols, const int min, const int max)
 {
-    for (size_t i = 0; i < arr.size(); i++)
+    for (size_t i = 0; i < rows; i++)
     {
-        for (size_t j = 0; j < arr[i].size(); j++)
+        for (size_t j = 0; j < cols; j++)
         {
             cout << "Введите значение для arr[" << i << "][" << j << "]: ";
             arr[i][j] = getNumber();
@@ -208,12 +214,12 @@ void fillArray(vector<vector<int>>& arr, const int min, const int max)
     }
 }
 
-void replaceMaxWithZero(vector<vector<int>>& arr)
+void replaceMaxWithZero(int** arr, const int rows, const int cols)
 {
-    for (size_t i = 0; i < arr.size(); i++)
+    for (size_t i = 0; i < rows; i++)
     {
         int maxIndex = 0;
-        for (size_t j = 1; j < arr[i].size(); j++)
+        for (size_t j = 1; j < cols; j++)
         {
             if (arr[i][j] > arr[i][maxIndex])
             {
@@ -224,15 +230,60 @@ void replaceMaxWithZero(vector<vector<int>>& arr)
     }
 }
 
-void insertZeroRows(vector<vector<int>>& arr)
+void insertZeroRows(int*** arr, const int rows , const int cols)
 {
-    vector<vector<int>> newArr;
-    for (size_t i = 0; i < arr.size(); i++)
+    Сначала подсчитаем, сколько строк нужно добавить
+    int count = 0;
+    for (int i = 0; i < rows; i++)
     {
-        if (arr[i].size() > 0 && arr[i][0] % 3 == 0)
+        if (cols > 0 && (*arr)[i][0] % 3 == 0)
         {
-            newArr.push_back(vector<int>(arr[i].size(), 0));
-        }r.push_back(arr[i]);
+            count++;
+        }
     }
-    arr = newArr;
-} newAr
+
+    if (count == 0) return; // Ничего не нужно добавлять
+
+    // Создаем новый массив с увеличенным количеством строк
+    int newRows = rows + count;
+    int** newArr = new int*[newRows];
+    
+    int newIndex = 0;
+    for (int i = 0; i < rows; i++)
+    {
+        if (cols > 0 && (*arr)[i][0] % 3 == 0)
+        {
+            // Добавляем новую строку с нулями
+            newArr[newIndex] = new int[cols];
+            for (int j = 0; j < cols; j++)
+            {
+                newArr[newIndex][j] = 0;
+            }
+            newIndex++;
+        }
+        
+        // Копируем текущую строку
+        newArr[newIndex] = new int[cols];
+        for (int j = 0; j < cols; j++)
+        {
+            newArr[newIndex][j] = (*arr)[i][j];
+        }
+        newIndex++;
+    }
+
+    // Освобождаем старый массив
+    freeArray(*arr, rows);
+    
+    // Обновляем указатель и количество строк
+    *arr = newArr;
+    rows = newRows;
+}
+
+void freeArray(int** arr, const int rows)
+{
+    for (int i = 0; i < rows; i++)
+    {
+        delete[] arr[i];
+    }
+    delete[] arr;
+}
