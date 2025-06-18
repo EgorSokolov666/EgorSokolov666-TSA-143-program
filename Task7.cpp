@@ -117,6 +117,6 @@ double sumModuloE(const double e)
 double recur(const int k)
 {
    // Recursive case: (-1)^k * k!/(4+k)! = (-1) * (-1)^(k-1) * [k/(4+k)] * (k-1)!/(4+k-1)!
-    return -1.0 * (k - 1)*(4 + k) / (5 + k);
+    return -1.0 * (k + 1)*(4 + k) / (5 + k);
 }
 double recur(const int k)
