@@ -83,6 +83,14 @@ void insertZeroRows(int*** arr, const int rows, const int cols);
  */
 void freeArray(int** arr, const int rows);
 
+/**
+ * @brief Создает глубокую копию двумерного массива
+ * @param arr Исходный массив для копирования
+ * @param rows Количество строк
+ * @param cols Количество столбцов
+ * @return Указатель на новый массив - копию исходного
+ * @note Требуется последующее освобождение памяти через freeArray()
+ */
 int** copyArray(int** arr, const int rows, const int cols);
 
 int main()
