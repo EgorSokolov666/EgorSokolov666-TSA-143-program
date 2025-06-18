@@ -83,6 +83,8 @@ void insertZeroRows(int*** arr, const int rows, const int cols);
  */
 void freeArray(int** arr, const int rows);
 
+int** copyArray(int** arr, const int rows, const int cols);
+
 int main()
 {
     setlocale(LC_ALL, "Russian");
@@ -91,7 +93,7 @@ int main()
     int cols = getSize();
     
     int** arr = new int*[rows];
-    for (int i = 0; i < rows; i++) {
+    for (size_t i = 0; i < rows; i++) {
         arr[i] = new int[cols];
     }
 
@@ -123,14 +125,18 @@ int main()
     cout << "\nИсходный массив:\n";
     printArray(arr, rows, cols);
 
+    int** arrCopy = copyArray(arr, rows, cols);
+
     replaceMaxWithZero(arr, rows, cols);
     cout << "\nМассив после замены максимальных элементов строк на нули:\n";
-    printArray(arr, rows, cols);
+    printArray(arrCopy, rows, cols);
 
-    insertZeroRows(arr, rows, cols);
+    int newRows = rows;
+    insertZeroRows(arrCopy, newRows, cols);
     cout << "\nМассив после вставки строк из нулей перед строками с первым элементом, делящимся на 3:\n";
     printArray(arr, rows, cols);
     
+    freeArray(arrCopy, newRows);
     freeArray(arr, rows);
     return EXIT_SUCCESS;
 }
@@ -232,9 +238,9 @@ void replaceMaxWithZero(int** arr, const int rows, const int cols)
 
 void insertZeroRows(int*** arr, const int rows , const int cols)
 {
-    Сначала подсчитаем, сколько строк нужно добавить
+    //Сначала подсчитаем, сколько строк нужно добавить
     int count = 0;
-    for (int i = 0; i < rows; i++)
+    for (size_t i = 0; i < *rows; i++)
     {
         if (cols > 0 && (*arr)[i][0] % 3 == 0)
         {
@@ -245,17 +251,17 @@ void insertZeroRows(int*** arr, const int rows , const int cols)
     if (count == 0) return; // Ничего не нужно добавлять
 
     // Создаем новый массив с увеличенным количеством строк
-    int newRows = rows + count;
+    int newRows = *rows + count;
     int** newArr = new int*[newRows];
     
     int newIndex = 0;
-    for (int i = 0; i < rows; i++)
+    for (size_t i = 0; i < *rows; i++)
     {
         if (cols > 0 && (*arr)[i][0] % 3 == 0)
         {
             // Добавляем новую строку с нулями
             newArr[newIndex] = new int[cols];
-            for (int j = 0; j < cols; j++)
+            for (size_t j = 0; j < cols; j++)
             {
                 newArr[newIndex][j] = 0;
             }
@@ -264,7 +270,7 @@ void insertZeroRows(int*** arr, const int rows , const int cols)
         
         // Копируем текущую строку
         newArr[newIndex] = new int[cols];
-        for (int j = 0; j < cols; j++)
+        for (size_t j = 0; j < cols; j++)
         {
             newArr[newIndex][j] = (*arr)[i][j];
         }
@@ -272,18 +278,32 @@ void insertZeroRows(int*** arr, const int rows , const int cols)
     }
 
     // Освобождаем старый массив
-    freeArray(*arr, rows);
+    freeArray(*arr, *rows);
     
     // Обновляем указатель и количество строк
     *arr = newArr;
-    rows = newRows;
+    *rows = newRows;
 }
 
 void freeArray(int** arr, const int rows)
 {
-    for (int i = 0; i < rows; i++)
+    for (size_t i = 0; i < rows; i++)
     {
         delete[] arr[i];
     }
     delete[] arr;
+}
+
+int** copyArray(int** arr, const int rows, const int cols)
+{
+    int** newArr = new int*[rows];
+    for (size_t i = 0; i < rows; i++)
+    {
+        newArr[i] = new int[cols];
+        for (size_t j = 0; j < cols; j++)
+        {
+            newArr[i][j] = arr[i][j];
+        }
+    }
+    return newArr;
 }
