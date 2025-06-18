@@ -86,13 +86,12 @@ double getValidE()
 
 double sumFirstN(const int n)
 {
-    const double a0 = 1;
-    double current = a0;
-    double sum = current;
+    double current = -1/120;
+    double sum = 0;
 
-    for (int k = 1; k < n; ++k)
+    for (int k = 1; k <= n; ++k)
     {
-        current *= recur(k);
+        current = recur(current, k);
         sum += current;
     }
 
@@ -102,21 +101,21 @@ double sumFirstN(const int n)
 double sumModuloE(const double e)
 {
     double sum = 0;
-    double current = -1;
+    double current = -1/120;
     int k = 1;
 
     while (abs(current) >= e)
     {
         sum += current;
-        current *= recur(k++);
+        current = recur(current, k);
+        k++;
     }
 
     return sum;
 
 }
-double recur(const int k)
+double recur(const double current, const int k)
 {
    // Recursive case: (-1)^k * k!/(4+k)! = (-1) * (-1)^(k-1) * [k/(4+k)] * (k-1)!/(4+k-1)!
-    return -1.0 * (k + 1)*(4 + k) / (5 + k);
+    return -current * (k + 1)/ (5 + k);
 }
-double recur(const int k)
