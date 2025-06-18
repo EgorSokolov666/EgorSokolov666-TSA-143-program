@@ -174,7 +174,7 @@ size_t getSize()
 
 int getNumber()
 {
-    int number;
+    int number=0;
     cin >> number;
     if (cin.fail())
     {
