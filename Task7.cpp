@@ -89,7 +89,7 @@ double sumFirstN(const int n)
     double current = -1/120;
     double sum = 0;
 
-    for (int k = 1; k <= n; ++k)
+    for (size_t k = 1; k <= n; ++k)
     {
         current = recur(current, k);
         sum += current;
